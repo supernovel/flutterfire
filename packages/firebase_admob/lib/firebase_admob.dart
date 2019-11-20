@@ -36,7 +36,7 @@ enum MobileAdGender {
 }
 
 /// Signature for a [MobileAd] status change callback.
-typedef void MobileAdListener(MobileAdEvent event);
+typedef void MobileAdListener(MobileAdEvent event, {int errorCode});
 
 /// Targeting info per the native AdMob API.
 ///
@@ -338,7 +338,7 @@ enum RewardedVideoAdEvent {
 /// configured for the AdMob ad unit when it was created. They will be null for
 /// all other events.
 typedef void RewardedVideoAdListener(RewardedVideoAdEvent event,
-    {String rewardType, int rewardAmount});
+    {String rewardType, int rewardAmount, int errorCode});
 
 /// An AdMob rewarded video ad.
 ///
@@ -500,6 +500,9 @@ class FirebaseAdMob {
           RewardedVideoAd.instance.listener(rewardedEvent,
               rewardType: argumentsMap['rewardType'],
               rewardAmount: argumentsMap['rewardAmount']);
+        } else if (argumentsMap.containsKey('errorCode')) {
+          RewardedVideoAd.instance
+              .listener(rewardedEvent, errorCode: argumentsMap['errorCode']);
         } else {
           RewardedVideoAd.instance.listener(rewardedEvent);
         }
@@ -510,7 +513,11 @@ class FirebaseAdMob {
         final MobileAd ad = MobileAd._allAds[id];
         final MobileAdEvent mobileAdEvent = _methodToMobileAdEvent[call.method];
         if (mobileAdEvent != null && ad.listener != null) {
-          ad.listener(mobileAdEvent);
+          if (argumentsMap.containsKey('errorCode')) {
+            ad.listener(mobileAdEvent, errorCode: argumentsMap['errorCode']);
+          } else {
+            ad.listener(mobileAdEvent);
+          }
         }
       }
     }
