@@ -32,7 +32,7 @@ class _MyAppState extends State<MyApp> {
       adUnitId: BannerAd.testAdUnitId,
       size: AdSize.banner,
       targetingInfo: targetingInfo,
-      listener: (MobileAdEvent event) {
+      listener: (MobileAdEvent event, {int errorCode}) {
         print("BannerAd event $event");
       },
     );
@@ -42,7 +42,7 @@ class _MyAppState extends State<MyApp> {
     return InterstitialAd(
       adUnitId: InterstitialAd.testAdUnitId,
       targetingInfo: targetingInfo,
-      listener: (MobileAdEvent event) {
+      listener: (MobileAdEvent event, {int errorCode}) {
         print("InterstitialAd event $event");
       },
     );
@@ -53,8 +53,8 @@ class _MyAppState extends State<MyApp> {
     super.initState();
     FirebaseAdMob.instance.initialize(appId: FirebaseAdMob.testAppId);
     _bannerAd = createBannerAd()..load();
-    RewardedVideoAd.instance.listener =
-        (RewardedVideoAdEvent event, {String rewardType, int rewardAmount}) {
+    RewardedVideoAd.instance.listener = (RewardedVideoAdEvent event,
+        {String rewardType, int rewardAmount, int errorCode}) {
       print("RewardedVideoAd event $event");
       if (event == RewardedVideoAdEvent.rewarded) {
         setState(() {
